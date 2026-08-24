@@ -70,19 +70,6 @@
     .hero__cue-line{width:1px;height:44px;background:linear-gradient(var(--muted), transparent);animation:drop 2.4s ease-in-out infinite}
     @keyframes drop{0%{transform:scaleY(0);transform-origin:top}40%{transform:scaleY(1);transform-origin:top}60%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-    .cinema{padding:clamp(14px,3vh,30px) clamp(18px,5vw,78px) 0}
-    .cinema__grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
-    .cinema__card{grid-column:span 4;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:transform .25s ease,border-color .25s ease}
-    .cinema__card:hover{transform:translateY(-3px);border-color:#3a3a44}
-    .cinema__media{aspect-ratio:4/5;overflow:hidden;background:#000}
-    .cinema__media--landscape{aspect-ratio:16/9}
-    .cinema__media img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.03) contrast(1.02)}
-    .cinema__body{padding:14px 14px 16px}
-    .cinema__eyebrow{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-    .cinema__eyebrow::before{content:"";width:22px;height:1px;background:var(--accent)}
-    .cinema__body h2{font-family:var(--display);font-weight:400;font-size:clamp(1.7rem,3vw,2.4rem);line-height:.92;margin:0 0 8px}
-    .cinema__body p{margin:0;color:var(--muted);font-size:13px}
-
     .section{padding:clamp(78px,12vh,150px) clamp(18px,5vw,78px)}
     .section__header{max-width:880px;margin-bottom:26px}
     .section__num{color:var(--accent);font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px}
@@ -92,10 +79,13 @@
     .projects{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
     .project-card{
       grid-column:span 4;background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)), var(--panel);
-      border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:250px;
+      border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;
       transition:transform .25s ease,border-color .25s ease,background .25s ease;
     }
     .project-card:hover{transform:translateY(-4px);border-color:#383847;background:var(--panel-2)}
+    .project-card__media{aspect-ratio:16/9;overflow:hidden;background:#000;border-bottom:1px solid rgba(255,255,255,.04)}
+    .project-card__media img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.03)}
+    .project-card__body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:0}
     .project-card h3{font-family:var(--display);font-size:clamp(2rem,4vw,2.7rem);line-height:.92;margin:0 0 10px}
     .project-card p{margin:0;color:var(--muted);font-size:14px;flex:1}
     .meta{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 18px}
@@ -171,40 +161,6 @@
       </div>
     </section>
 
-    <section class="cinema" aria-label="Machine images">
-      <div class="cinema__grid">
-        <article class="cinema__card">
-          <div class="cinema__media">
-            <img src="assets/terminator-cyber-portrait.png" alt="Original cybernetic portrait with a glowing red eye" />
-          </div>
-          <div class="cinema__body">
-            <div class="cinema__eyebrow">Visual layer</div>
-            <h2>Cybernetic portrait</h2>
-            <p>Dark chrome, red scanner glow, and a restrained machine face to lift the hero without turning the page into a poster wall.</p>
-          </div>
-        </article>
-        <article class="cinema__card">
-          <div class="cinema__media cinema__media--landscape">
-            <img src="assets/terminator-battlefield.png" alt="Original machine-war landscape with a red horizon" />
-          </div>
-          <div class="cinema__body">
-            <div class="cinema__eyebrow">Backdrop</div>
-            <h2>Machine war</h2>
-            <p>Wide atmospheric ruin shot for section breaks, banners, and top-of-page depth.</p>
-          </div>
-        </article>
-        <article class="cinema__card">
-          <div class="cinema__media">
-            <img src="assets/terminator-eye-closeup.png" alt="Original close-up of a red cybernetic eye" />
-          </div>
-          <div class="cinema__body">
-            <div class="cinema__eyebrow">Accent</div>
-            <h2>Red eye detail</h2>
-            <p>Use this as a tight decorative insert when the page needs a harder mechanical edge.</p>
-          </div>
-        </article>
-      </div>
-    </section>
 
     <section class="section" id="projects">
       <div class="section__header">
@@ -334,23 +290,34 @@
       return repo.homepage && repo.homepage.trim() ? repo.homepage : repo.html_url;
     }
 
+    const PROJECT_IMAGES = {
+      'lil-skrrt': { src: 'assets/terminator-cyber-portrait.png', alt: 'Original cybernetic portrait with a glowing red eye' },
+      'Spotify-vdj': { src: 'assets/terminator-eye-closeup.png', alt: 'Original close-up of a red cybernetic eye' },
+      'Skrrt-Clip': { src: 'assets/terminator-battlefield.png', alt: 'Original machine-war landscape with a red horizon' },
+      'salesforce-hygiene-website': { src: 'assets/salesforce-hygiene-hero.png', alt: 'Original cinematic red-and-steel enterprise control-room scene' }
+    };
+
     function card(repo) {
       const description = repo.description || 'No description provided.';
       const lang = repo.language || 'Code';
       const updated = repo.pushed_at ? fmtDate(repo.pushed_at) : 'unknown';
       const live = repo.homepage && repo.homepage.trim();
+      const image = PROJECT_IMAGES[repo.name];
       return `
         <article class="project-card">
-          <h3>${repo.name}</h3>
-          <p>${description}</p>
-          <div class="meta">
-            <span class="tag">${lang}</span>
-            <span class="tag">★ ${repo.stargazers_count}</span>
-            <span class="tag">Updated ${updated}</span>
-          </div>
-          <div class="actions">
-            <a class="btn" href="${repo.html_url}" target="_blank" rel="noreferrer">Source</a>
-            ${live ? `<a class="btn btn--ghost" href="${repo.homepage}" target="_blank" rel="noreferrer">Live</a>` : ''}
+          ${image ? `<div class="project-card__media"><img src="${image.src}" alt="${image.alt}" /></div>` : ''}
+          <div class="project-card__body">
+            <h3>${repo.name}</h3>
+            <p>${description}</p>
+            <div class="meta">
+              <span class="tag">${lang}</span>
+              <span class="tag">★ ${repo.stargazers_count}</span>
+              <span class="tag">Updated ${updated}</span>
+            </div>
+            <div class="actions">
+              <a class="btn" href="${repo.html_url}" target="_blank" rel="noreferrer">Source</a>
+              ${live ? `<a class="btn btn--ghost" href="${repo.homepage}" target="_blank" rel="noreferrer">Live</a>` : ''}
+            </div>
           </div>
         </article>
       `;
