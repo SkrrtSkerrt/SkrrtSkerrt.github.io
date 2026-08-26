@@ -167,7 +167,7 @@
           </div>
           <div class="hero__copy">
             <div class="eyebrow">// Identity</div>
-            <h1>SkrrtSkerrt</h1>
+            <h1 data-final-text="SkrrtSkerrt"><>[]{}/*+=!?@#%&$</h1>
             <div class="hero__title">T-800 Unit</div>
             <div class="hero__role">AI systems engineering, automation, media tooling, and public experiments. No filler. Only shipped surfaces.</div>
           </div>
@@ -307,7 +307,7 @@
     }
 
     if (heroTitle) {
-      const finalText = heroTitle.textContent.trim();
+      const finalText = heroTitle.dataset.finalText || heroTitle.textContent.trim();
       heroTitle.dataset.finalText = finalText;
       heroTitle.setAttribute('aria-label', finalText);
       heroTitle.classList.add('scramble-ready');
