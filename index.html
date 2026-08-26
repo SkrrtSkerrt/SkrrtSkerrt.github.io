@@ -77,15 +77,7 @@
     .hero__portrait img{object-fit:cover;object-position:center top;transition:opacity .55s ease,filter .55s ease;filter:saturate(1.03) contrast(1.02)}
     .hero__copy{max-width:780px;align-self:center}
     .hero__copy h1{position:relative;display:inline-block;isolation:isolate;font-family:var(--display);font-weight:400;font-size:clamp(4rem,11vw,8.8rem);line-height:.86;letter-spacing:.02em;margin:0;color:var(--text);cursor:default;transition:transform .2s ease,color .2s ease,text-shadow .2s ease,filter .2s ease}
-    .hero__copy h1.scramble-ready{cursor:pointer}
-    .hero__copy h1.scramble-ready:hover{transform:translateY(-1px);color:#5f392f;text-shadow:0 0 22px rgba(180,58,43,.16)}
-    .hero__copy h1.is-liquid{color:transparent;background:linear-gradient(90deg,#231714 0%,#f7eee5 12%,#8a584b 24%,#fffdf8 38%,#6f453c 50%,#f4e7dc 66%,#3a241f 82%,#fff9f1 92%,#2a1b17 100%);background-size:280% 100%;-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 10px rgba(180,58,43,.14)) drop-shadow(0 0 2px rgba(255,248,240,.25));animation:liquid-flow 2.9s ease-in-out infinite}
-    .hero__copy h1.is-liquid::before,.hero__copy h1.is-liquid::after{content:attr(data-display-text);position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen}
-    .hero__copy h1.is-liquid::before{color:rgba(255,250,244,.96);transform:translate(calc(var(--liquid-x,0px) * -1),calc(var(--liquid-y,0px) * -1));clip-path:polygon(0 0,100% 0,100% 16%,84% 17%,80% 28%,100% 31%,93% 44%,72% 48%,63% 58%,88% 63%,100% 76%,73% 82%,70% 100%,0 100%,0 82%,18% 78%,28% 69%,8% 61%,0 48%,16% 39%,10% 24%,0 17%);filter:blur(.55px) saturate(1.12);opacity:.88;animation:liquid-glint 1.65s ease-in-out infinite}
-    .hero__copy h1.is-liquid::after{color:rgba(180,58,43,.82);transform:translate(var(--liquid-x,0px),var(--liquid-y,0px));clip-path:polygon(0 0,100% 0,100% 13%,90% 18%,97% 29%,77% 34%,86% 46%,100% 53%,79% 60%,89% 72%,100% 84%,82% 89%,76% 100%,0 100%,0 86%,14% 80%,22% 70%,4% 63%,0 50%,10% 41%,4% 29%,16% 20%,0 11%);filter:blur(.28px) saturate(1.18);opacity:.72;animation:liquid-fracture 950ms steps(2,end) infinite}
-    @keyframes liquid-flow{0%{background-position:0% 50%;transform:translateY(0) skewX(0deg)}25%{transform:translateY(-1px) skewX(-1.5deg)}50%{background-position:100% 50%;transform:translateY(1px) skewX(1.2deg)}75%{transform:translateY(-.5px) skewX(-.8deg)}100%{background-position:0% 50%;transform:translateY(0) skewX(0deg)}}
-    @keyframes liquid-glint{0%,100%{opacity:.7;filter:blur(.45px) saturate(1.08)}50%{opacity:1;filter:blur(.2px) saturate(1.22)}}
-    @keyframes liquid-fracture{0%{clip-path:polygon(0 0,100% 0,100% 16%,84% 17%,80% 28%,100% 31%,93% 44%,72% 48%,63% 58%,88% 63%,100% 76%,73% 82%,70% 100%,0 100%,0 82%,18% 78%,28% 69%,8% 61%,0 48%,16% 39%,10% 24%,0 17%)}50%{clip-path:polygon(0 0,100% 0,100% 8%,92% 20%,100% 29%,74% 37%,82% 48%,100% 56%,74% 63%,91% 75%,100% 88%,78% 92%,70% 100%,0 100%,0 88%,14% 80%,22% 69%,6% 61%,0 50%,13% 39%,6% 24%,16% 12%,0 8%)}100%{clip-path:polygon(0 0,100% 0,100% 16%,84% 17%,80% 28%,100% 31%,93% 44%,72% 48%,63% 58%,88% 63%,100% 76%,73% 82%,70% 100%,0 100%,0 82%,18% 78%,28% 69%,8% 61%,0 48%,16% 39%,10% 24%,0 17%)}}
+    .hero__copy h1:hover{transform:translateY(-1px);color:#5f392f;text-shadow:0 0 22px rgba(180,58,43,.16)}
     .eyebrow{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--accent);font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:18px}
     .hero__title{font-family:var(--display);font-size:clamp(.8rem,1.4vw,1rem);line-height:1.05;letter-spacing:.18em;color:#8d5d54;margin-top:10px}
     .hero__role{margin:14px auto 0;max-width:58ch;color:var(--muted);font-size:13px}
@@ -178,7 +170,7 @@
           </div>
           <div class="hero__copy">
             <div class="eyebrow">// Identity</div>
-            <h1 data-final-text="SkrrtSkerrt" data-display-text="SkrrtSkerrt">SkrrtSkerrt</h1>
+            <h1>SkrrtSkerrt</h1>
             <div class="hero__title">T-800 Unit</div>
             <div class="hero__role">AI systems engineering, automation, media tooling, and public experiments. No filler. Only shipped surfaces.</div>
           </div>
@@ -386,52 +378,8 @@
       ro.observe(media);
     }
 
-    function liquidMetalText(el, finalText, duration = 1800) {
-      if (!el) return;
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      el.dataset.finalText = finalText;
-      el.dataset.displayText = finalText;
-      if (reduceMotion) {
-        el.classList.remove('is-liquid');
-        el.textContent = finalText;
-        return;
-      }
-      if (el._liquidFrame) cancelAnimationFrame(el._liquidFrame);
-      el.classList.add('is-liquid');
-      el.textContent = finalText;
-      const start = performance.now();
-      const tick = (now) => {
-        const progress = Math.min((now - start) / duration, 1);
-        const flow = Math.sin(now * 0.006) * (1 - progress) * 10;
-        const drift = Math.cos(now * 0.0045) * (1 - progress) * 4;
-        el.style.setProperty('--liquid-x', `${flow * 0.7}px`);
-        el.style.setProperty('--liquid-y', `${drift}px`);
-        el.style.opacity = `${0.92 + (progress * 0.08)}`;
-        if (progress < 1) {
-          el._liquidFrame = requestAnimationFrame(tick);
-        } else {
-          el.style.removeProperty('--liquid-x');
-          el.style.removeProperty('--liquid-y');
-          el.classList.remove('is-liquid');
-          el._liquidFrame = 0;
-        }
-      };
-      el._liquidFrame = requestAnimationFrame(tick);
-    }
-
     if (heroTitle) {
-      const finalText = heroTitle.dataset.finalText || heroTitle.textContent.trim();
-      heroTitle.dataset.finalText = finalText;
-      heroTitle.dataset.displayText = heroTitle.dataset.displayText || finalText;
-      heroTitle.setAttribute('aria-label', finalText);
-      heroTitle.classList.add('scramble-ready');
-      const replay = () => liquidMetalText(heroTitle, finalText, 1800);
-      heroTitle.addEventListener('mouseenter', replay);
-      heroTitle.addEventListener('focus', replay);
-      heroTitle.addEventListener('click', replay);
-      window.addEventListener('load', () => {
-        window.setTimeout(replay, 450);
-      }, { once: true });
+      heroTitle.textContent = heroTitle.textContent.trim() || 'SkrrtSkerrt';
     }
 
     window.addEventListener('scroll', () => {
