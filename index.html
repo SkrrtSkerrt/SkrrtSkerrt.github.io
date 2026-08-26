@@ -75,6 +75,9 @@
     .hero__portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(180,58,43,.08), transparent 42%, rgba(24,18,16,.05) 100%);mix-blend-mode:multiply;pointer-events:none}
     .hero__portrait img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
     .hero__copy{max-width:780px;align-self:center}
+    .hero__copy h1{font-family:var(--display);font-weight:400;font-size:clamp(4rem,11vw,8.8rem);line-height:.86;letter-spacing:.02em;margin:0;color:var(--text);cursor:default;transition:transform .2s ease,color .2s ease,text-shadow .2s ease}
+    .hero__copy h1.scramble-ready{cursor:pointer}
+    .hero__copy h1.scramble-ready:hover{transform:translateY(-1px);color:#5f392f;text-shadow:0 0 22px rgba(180,58,43,.16)}
     .eyebrow{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--accent);font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:18px}
     .hero__title{font-family:var(--display);font-size:clamp(.8rem,1.4vw,1rem);line-height:1.05;letter-spacing:.18em;color:#8d5d54;margin-top:10px}
     .hero__role{margin:14px auto 0;max-width:58ch;color:var(--muted);font-size:13px}
@@ -270,6 +273,52 @@
     const rail = document.getElementById('project-rail');
     const stats = document.getElementById('repo-stats');
     const statusLine = document.getElementById('status-line');
+    const heroTitle = document.querySelector('.hero__copy h1');
+    const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/\\[]{}_*+-=!?';
+
+    function scrambleText(el, finalText, duration = 1000) {
+      if (!el) return;
+      el.dataset.finalText = finalText;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) {
+        el.textContent = finalText;
+        return;
+      }
+      if (el._scrambleFrame) cancelAnimationFrame(el._scrambleFrame);
+      const start = performance.now();
+      const len = finalText.length;
+      const tick = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const revealCount = Math.floor(progress * len);
+        let output = '';
+        for (let i = 0; i < len; i += 1) {
+          const ch = finalText[i];
+          output += i < revealCount || ch === ' ' ? ch : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+        }
+        el.textContent = output;
+        if (progress < 1) {
+          el._scrambleFrame = requestAnimationFrame(tick);
+        } else {
+          el.textContent = finalText;
+          el._scrambleFrame = 0;
+        }
+      };
+      el._scrambleFrame = requestAnimationFrame(tick);
+    }
+
+    if (heroTitle) {
+      const finalText = heroTitle.textContent.trim();
+      heroTitle.dataset.finalText = finalText;
+      heroTitle.setAttribute('aria-label', finalText);
+      heroTitle.classList.add('scramble-ready');
+      const replay = () => scrambleText(heroTitle, finalText, 1100);
+      heroTitle.addEventListener('mouseenter', replay);
+      heroTitle.addEventListener('focus', replay);
+      heroTitle.addEventListener('click', replay);
+      window.addEventListener('load', () => {
+        window.setTimeout(replay, 450);
+      }, { once: true });
+    }
 
     window.addEventListener('scroll', () => {
       if (window.scrollY > 64) nav.classList.add('show');
