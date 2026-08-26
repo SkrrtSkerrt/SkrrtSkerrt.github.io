@@ -73,9 +73,6 @@
     h1{font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,7vw,5.5rem);line-height:.88;letter-spacing:.01em;margin:0}
     .hero__title{font-family:var(--display);font-size:clamp(.8rem,1.4vw,1rem);line-height:1.05;letter-spacing:.18em;color:#c9c4bb;margin-top:10px}
     .hero__role{margin-top:14px;max-width:58ch;color:var(--muted);font-size:13px}
-    .hero__cue{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;color:#a9a59c;font-size:10px;letter-spacing:3px;text-transform:uppercase}
-    .hero__cue-line{width:1px;height:44px;background:linear-gradient(var(--muted), transparent);animation:drop 2.4s ease-in-out infinite}
-    @keyframes drop{0%{transform:scaleY(0);transform-origin:top}40%{transform:scaleY(1);transform-origin:top}60%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
     .section{padding:clamp(78px,12vh,150px) clamp(18px,5vw,78px)}
     .section__header{max-width:880px;margin-bottom:26px}
@@ -160,10 +157,6 @@
           <h1>SkrrtSkerrt</h1>
           <div class="hero__title">T-800 Unit</div>
           <div class="hero__role">AI systems engineering, automation, media tooling, and public experiments. No filler. Only shipped surfaces.</div>
-        </div>
-        <div class="hero__cue" aria-hidden="true">
-          <span>Scroll to descend</span>
-          <div class="hero__cue-line"></div>
         </div>
       </div>
     </section>
