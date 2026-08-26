@@ -73,11 +73,8 @@
     .hero__content{position:relative;z-index:2;width:min(100%,1280px);margin-inline:auto;padding:clamp(22px,5vw,70px) clamp(18px,5vw,78px) clamp(72px,10vh,116px);display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3vw,32px);text-align:center}
     .hero__portrait{width:min(100%,420px);aspect-ratio:1/1;border-radius:30px;overflow:hidden;border:1px solid rgba(78,62,53,.24);background:linear-gradient(180deg, rgba(255,255,255,.44), rgba(255,255,255,.12));box-shadow:0 20px 60px rgba(88,64,52,.18);position:relative}
     .hero__portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(180,58,43,.08), transparent 42%, rgba(24,18,16,.05) 100%);mix-blend-mode:multiply;pointer-events:none;transition:opacity .35s ease}
-    .hero__portrait img,.hero__portrait canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .hero__portrait img{position:absolute;inset:0;width:100%;height:100%;display:block}
     .hero__portrait img{object-fit:cover;object-position:center top;transition:opacity .55s ease,filter .55s ease;filter:saturate(1.03) contrast(1.02)}
-    .hero__portrait canvas{pointer-events:none;mix-blend-mode:normal}
-    .hero__portrait.is-particleized img{opacity:.14;filter:blur(1px) saturate(.9) contrast(.95)}
-    .hero__portrait.is-particleized::after{opacity:.45}
     .hero__copy{max-width:780px;align-self:center}
     .hero__copy h1{font-family:var(--display);font-weight:400;font-size:clamp(4rem,11vw,8.8rem);line-height:.86;letter-spacing:.02em;margin:0;color:var(--text);cursor:default;transition:transform .2s ease,color .2s ease,text-shadow .2s ease}
     .hero__copy h1.scramble-ready{cursor:pointer}
@@ -99,8 +96,11 @@
       transition:transform .25s ease,border-color .25s ease,background .25s ease;
     }
     .project-card:hover{transform:translateY(-4px);border-color:#bca998;background:var(--panel-2)}
-    .project-card__media{aspect-ratio:16/9;overflow:hidden;background:#d8d1c8;border-bottom:1px solid rgba(78,62,53,.08)}
-    .project-card__media img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.03)}
+    .project-card__media{aspect-ratio:16/9;overflow:hidden;background:#d8d1c8;border-bottom:1px solid rgba(78,62,53,.08);position:relative}
+    .project-card__media img,.project-card__media canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .project-card__media img{object-fit:cover;filter:saturate(1.05) contrast(1.03);transition:opacity .45s ease,filter .45s ease}
+    .project-card__media canvas{pointer-events:none;mix-blend-mode:normal}
+    .project-card__media.is-particleized img{opacity:.18;filter:blur(.7px) saturate(.95) contrast(.98)}
     .project-card__body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:0}
     .project-card h3{font-family:var(--display);font-size:clamp(2rem,4vw,2.7rem);line-height:.92;margin:0 0 10px}
     .project-card p{margin:0;color:var(--muted);font-size:14px;flex:1}
@@ -168,7 +168,6 @@
         <div class="hero__content">
           <div class="hero__portrait">
             <img src="assets/me.webp" alt="Portrait of Josh" />
-            <canvas aria-hidden="true"></canvas>
           </div>
           <div class="hero__copy">
             <div class="eyebrow">// Identity</div>
@@ -279,15 +278,14 @@
     const stats = document.getElementById('repo-stats');
     const statusLine = document.getElementById('status-line');
     const heroTitle = document.querySelector('.hero__copy h1');
-    const heroPortrait = document.querySelector('.hero__portrait');
-    const heroPortraitCanvas = heroPortrait?.querySelector('canvas');
-    const heroPortraitImg = heroPortrait?.querySelector('img');
     const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/\\[]{}_*+-=!?';
 
-    function initParticlePortrait() {
-      if (!heroPortrait || !heroPortraitCanvas || !heroPortraitImg || !heroPortraitCanvas.getContext) return;
+    function particleizeMedia(media, { step = 7, settleMs = 1200, underlayOpacity = .18, waveX = 1.8, waveY = 0.4, densityCutoff = .16 } = {}) {
+      const img = media?.querySelector('img');
+      const canvas = media?.querySelector('canvas');
+      if (!media || !img || !canvas || !canvas.getContext) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const ctx = heroPortraitCanvas.getContext('2d');
+      const ctx = canvas.getContext('2d');
       if (!ctx) return;
       const sampleCanvas = document.createElement('canvas');
       const sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
@@ -299,18 +297,17 @@
       let dpr = 1;
       let raf = 0;
       let start = 0;
-      const step = 6;
       source.decoding = 'async';
-      source.src = heroPortraitImg.currentSrc || heroPortraitImg.src;
+      source.src = img.currentSrc || img.src;
 
       const rebuild = () => {
-        cssW = Math.max(1, Math.round(heroPortrait.clientWidth));
-        cssH = Math.max(1, Math.round(heroPortrait.clientHeight));
+        cssW = Math.max(1, Math.round(media.clientWidth));
+        cssH = Math.max(1, Math.round(media.clientHeight));
         dpr = Math.min(window.devicePixelRatio || 1, 2);
-        heroPortraitCanvas.width = Math.round(cssW * dpr);
-        heroPortraitCanvas.height = Math.round(cssH * dpr);
-        heroPortraitCanvas.style.width = `${cssW}px`;
-        heroPortraitCanvas.style.height = `${cssH}px`;
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(cssH * dpr);
+        canvas.style.width = `${cssW}px`;
+        canvas.style.height = `${cssH}px`;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         sampleCanvas.width = cssW;
         sampleCanvas.height = cssH;
@@ -327,7 +324,7 @@
             const a = data[i + 3];
             if (a < 40) continue;
             const brightness = (r + g + b) / 765;
-            if (brightness < 0.16 && Math.random() < 0.5) continue;
+            if (brightness < densityCutoff && Math.random() < 0.5) continue;
             particles.push({
               x,
               y,
@@ -346,15 +343,15 @@
       const draw = (now) => {
         if (!particles.length) return;
         const elapsed = now - start;
-        const settle = Math.min(elapsed / 1200, 1);
+        const settle = Math.min(elapsed / settleMs, 1);
         const eased = 1 - Math.pow(1 - settle, 3);
         ctx.clearRect(0, 0, cssW, cssH);
         for (const p of particles) {
-          const waveX = Math.sin(now * 0.0017 + p.y * 0.045 + p.phase) * (1.8 + p.brightness * 7.5);
-          const waveY = Math.cos(now * 0.0012 + p.x * 0.03 + p.seed) * (0.4 + p.brightness * 1.4);
-          const x = p.sx + (p.x - p.sx) * eased + waveX;
-          const y = p.sy + (p.y - p.sy) * eased + waveY;
-          ctx.globalAlpha = 0.26 + p.brightness * 0.84;
+          const waveXMotion = Math.sin(now * 0.0017 + p.y * 0.045 + p.phase) * (waveX + p.brightness * 7.5);
+          const waveYMotion = Math.cos(now * 0.0012 + p.x * 0.03 + p.seed) * (waveY + p.brightness * 1.4);
+          const x = p.sx + (p.x - p.sx) * eased + waveXMotion;
+          const y = p.sy + (p.y - p.sy) * eased + waveYMotion;
+          ctx.globalAlpha = underlayOpacity + p.brightness * 0.84;
           ctx.fillStyle = p.color;
           ctx.fillRect(x, y, Math.max(1.2, p.size * (1.2 + p.brightness * 1.6)), Math.max(1, p.size * 0.72));
         }
@@ -365,7 +362,7 @@
       const startRender = () => {
         if (!source.naturalWidth) return;
         rebuild();
-        heroPortrait.classList.add('is-particleized');
+        media.classList.add('is-particleized');
         start = performance.now();
         if (raf) cancelAnimationFrame(raf);
         raf = requestAnimationFrame(draw);
@@ -375,11 +372,11 @@
       if (source.complete) startRender();
 
       const ro = new ResizeObserver(() => {
-        if (!heroPortrait.classList.contains('is-particleized')) return;
+        if (!media.classList.contains('is-particleized')) return;
         rebuild();
         start = performance.now();
       });
-      ro.observe(heroPortrait);
+      ro.observe(media);
     }
 
     function scrambleText(el, finalText, duration = 1000) {
@@ -426,8 +423,6 @@
       }, { once: true });
     }
 
-    initParticlePortrait();
-
     window.addEventListener('scroll', () => {
       if (window.scrollY > 64) nav.classList.add('show');
       else nav.classList.remove('show');
@@ -473,7 +468,7 @@
       const image = PROJECT_IMAGES[repo.name];
       return `
         <article class="project-card">
-          ${image ? `<div class="project-card__media"><img src="${image.src}" alt="${image.alt}" /></div>` : ''}
+          ${image ? `<div class="project-card__media"><img src="${image.src}" alt="${image.alt}" /><canvas aria-hidden="true"></canvas></div>` : ''}
           <div class="project-card__body">
             <h3>${repo.name}</h3>
             <p>${description}</p>
@@ -515,6 +510,16 @@
         const featured = byFeatured(repos);
         featuredRoot.innerHTML = featured.map(card).join('');
         allRoot.innerHTML = repos.map(card).join('');
+        document.querySelectorAll('.project-card__media').forEach((media) => {
+          particleizeMedia(media, {
+            step: 7,
+            settleMs: 1100,
+            underlayOpacity: .14,
+            waveX: 2.1,
+            waveY: 0.55,
+            densityCutoff: .18
+          });
+        });
         const railItems = repos.concat(repos).map(railItem).join('');
         rail.innerHTML = railItems;
         stats.textContent = `${repos.length} public repos loaded from GitHub. Featured: ${featured.length}.`;
