@@ -102,11 +102,22 @@
       transition:transform .25s ease,border-color .25s ease,background .25s ease;
     }
     .project-card:hover{transform:translateY(-4px);border-color:#bca998;background:var(--panel-2)}
-    .project-card__media{aspect-ratio:16/9;overflow:hidden;background:#d8d1c8;border-bottom:1px solid rgba(78,62,53,.08);position:relative}
-    .project-card__media img,.project-card__media canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-    .project-card__media img{object-fit:cover;filter:saturate(1.05) contrast(1.03);transition:opacity .45s ease,filter .45s ease}
-    .project-card__media canvas{pointer-events:none;mix-blend-mode:normal}
-    .project-card__media.is-particleized img{opacity:.18;filter:blur(.7px) saturate(.95) contrast(.98)}
+    .project-card__media{aspect-ratio:16/9;overflow:hidden;background:linear-gradient(180deg,#111013 0%,#1b1717 55%,#0f0e10 100%);border-bottom:1px solid rgba(78,62,53,.08);position:relative;isolation:isolate}
+    .project-card__media::before,.project-card__media::after{content:"";position:absolute;inset:0;pointer-events:none}
+    .project-card__media::before{background:linear-gradient(115deg, rgba(255,255,255,.08) 0 2px, transparent 2px 14px, rgba(255,255,255,.04) 14px 15px, transparent 15px 100%),linear-gradient(180deg, rgba(255,255,255,.06), transparent 30%, rgba(0,0,0,.35));mix-blend-mode:screen;opacity:.45;z-index:2}
+    .project-card__media::after{background:repeating-linear-gradient(180deg, rgba(255,255,255,.06) 0 1px, transparent 1px 6px),radial-gradient(circle at 20% 18%, rgba(255,255,255,.18), transparent 18%),radial-gradient(circle at 78% 72%, rgba(180,58,43,.14), transparent 22%);mix-blend-mode:overlay;opacity:.42;z-index:2}
+    .project-card__media img,.project-card__media canvas,.project-card__fallback{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .project-card__media img{object-fit:cover;filter:grayscale(1) contrast(1.18) brightness(.72) sepia(.22) saturate(.48);transition:opacity .45s ease,filter .45s ease}
+    .project-card__media canvas{pointer-events:none;mix-blend-mode:screen;z-index:1}
+    .project-card__media.is-particleized img{opacity:.08;filter:grayscale(1) blur(.6px) contrast(1.15) brightness(.62) sepia(.28) saturate(.35)}
+    .project-card__media--fallback{display:flex;align-items:flex-end;justify-content:flex-start;padding:18px;background:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,.08), transparent 24%),
+      radial-gradient(circle at 80% 70%, rgba(180,58,43,.18), transparent 18%),
+      linear-gradient(135deg, #0d0c0e 0%, #191417 46%, #09090b 100%);}
+    .project-card__fallback{position:relative;z-index:0;display:flex;align-items:flex-end;justify-content:flex-start;color:#f0ece6;font-size:12px;letter-spacing:3px;text-transform:uppercase;padding:18px 20px;background:
+      linear-gradient(115deg, rgba(255,255,255,.08) 0 2px, transparent 2px 13px, rgba(255,255,255,.03) 13px 15px, transparent 15px 100%),
+      linear-gradient(180deg, transparent 0%, rgba(255,255,255,.04) 100%);
+      text-shadow:0 0 10px rgba(0,0,0,.65);}
     .project-card__body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:0}
     .project-card h3{font-family:var(--display);font-size:clamp(2rem,4vw,2.7rem);line-height:.92;margin:0 0 10px}
     .project-card p{margin:0;color:var(--muted);font-size:14px;flex:1}
@@ -350,8 +361,9 @@
           const waveYMotion = Math.cos(now * 0.0012 + p.x * 0.03 + p.seed) * (waveY + p.brightness * 1.4);
           const x = p.sx + (p.x - p.sx) * eased + waveXMotion;
           const y = p.sy + (p.y - p.sy) * eased + waveYMotion;
-          ctx.globalAlpha = underlayOpacity + p.brightness * 0.84;
-          ctx.fillStyle = p.color;
+          const steel = Math.round(32 + p.brightness * 170);
+          ctx.globalAlpha = underlayOpacity + p.brightness * 0.76;
+          ctx.fillStyle = p.brightness > .82 ? `rgba(${Math.min(255, steel + 28)},${Math.round(steel * .36)},${Math.round(steel * .24)},1)` : `rgba(${steel},${steel + 2},${steel + 6},1)`;
           ctx.fillRect(x, y, Math.max(1.2, p.size * (1.2 + p.brightness * 1.6)), Math.max(1, p.size * 0.72));
         }
         ctx.globalAlpha = 1;
@@ -409,10 +421,10 @@
     }
 
     const PROJECT_IMAGES = {
-      'lil-skrrt': { src: 'assets/terminator-cyber-portrait.png', alt: 'Original cybernetic portrait with a glowing red eye' },
-      'Spotify-vdj': { src: 'assets/terminator-eye-closeup.png', alt: 'Original close-up of a red cybernetic eye' },
-      'Skrrt-Clip': { src: 'assets/terminator-battlefield.png', alt: 'Original machine-war landscape with a red horizon' },
-      'salesforce-hygiene-website': { src: 'assets/salesforce-hygiene-hero.png', alt: 'Original cinematic red-and-steel enterprise control-room scene' }
+      'lil-skrrt': { src: 'assets/terminator-cyber-portrait.png', alt: 'Scrappy steel cyber portrait with a red reactor eye' },
+      'Spotify-vdj': { src: 'assets/terminator-eye-closeup.png', alt: 'Scrappy steel close-up with an ember-red lens' },
+      'Skrrt-Clip': { src: 'assets/terminator-battlefield.png', alt: 'Scrappy machine-war landscape with a red horizon' },
+      'salesforce-hygiene-website': { src: 'assets/salesforce-hygiene-hero.png', alt: 'Scrappy steel control room with red industrial glow' }
     };
 
     function card(repo) {
@@ -423,7 +435,7 @@
       const image = PROJECT_IMAGES[repo.name];
       return `
         <article class="project-card">
-          ${image ? `<div class="project-card__media"><img src="${image.src}" alt="${image.alt}" /><canvas aria-hidden="true"></canvas></div>` : ''}
+          ${image ? `<div class="project-card__media"><img src="${image.src}" alt="${image.alt}" loading="lazy" decoding="async" /><canvas aria-hidden="true"></canvas></div>` : `<div class="project-card__media project-card__media--fallback"><div class="project-card__fallback">${repo.name}</div></div>`}
           <div class="project-card__body">
             <h3>${repo.name}</h3>
             <p>${description}</p>
