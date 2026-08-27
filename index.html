@@ -76,8 +76,13 @@
     .hero__portrait img{position:absolute;inset:0;width:100%;height:100%;display:block}
     .hero__portrait img{object-fit:cover;object-position:center top;transition:opacity .55s ease,filter .55s ease;filter:saturate(1.03) contrast(1.02)}
     .hero__copy{max-width:780px;align-self:center}
-    .hero__copy h1{position:relative;display:inline-block;isolation:isolate;font-family:var(--display);font-weight:400;font-size:clamp(4rem,11vw,8.8rem);line-height:.86;letter-spacing:.02em;margin:0;color:var(--text);cursor:default;transition:transform .2s ease,color .2s ease,text-shadow .2s ease,filter .2s ease}
-    .hero__copy h1:hover{transform:translateY(-1px);color:#5f392f;text-shadow:0 0 22px rgba(180,58,43,.16)}
+    .hero__copy h1{position:relative;display:inline-block;isolation:isolate;font-family:var(--display);font-weight:400;font-size:clamp(4rem,11vw,8.8rem);line-height:.86;letter-spacing:.02em;margin:0;cursor:default;transition:transform .2s ease,text-shadow .2s ease,filter .2s ease}
+    .hero__copy-base,.hero__copy-liquid{display:inline-block;position:relative;white-space:pre}
+    .hero__copy-base{z-index:1;color:#5f463d;background:linear-gradient(110deg,#2a1f1a 0%,#6e5a50 12%,#f7f4f0 24%,#8c7266 35%,#d7cbc0 47%,#fffefc 56%,#a58d7f 68%,#564239 79%,#faf6f1 90%,#2d221d 100%);background-size:240% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;text-shadow:0 1px 0 rgba(255,255,255,.24),0 0 18px rgba(180,58,43,.14),0 18px 30px rgba(52,35,29,.14);filter:drop-shadow(0 0 8px rgba(255,255,255,.06));animation:liquidSweep 7s linear infinite}
+    .hero__copy-liquid{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.58;transform:translate(1px,-1px);filter:blur(.45px) saturate(1.08);mix-blend-mode:screen;background:linear-gradient(120deg,rgba(255,255,255,.1) 0%,rgba(255,255,255,.95) 16%,rgba(160,135,125,.22) 33%,rgba(255,255,255,.82) 50%,rgba(92,70,62,.35) 68%,rgba(255,255,255,.12) 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:liquidFloat 6.2s ease-in-out infinite,liquidSweep 8.5s linear infinite reverse}
+    .hero__copy h1:hover{transform:translateY(-1px) scale(1.005);text-shadow:0 1px 0 rgba(255,255,255,.28),0 0 22px rgba(180,58,43,.18),0 18px 30px rgba(52,35,29,.16)}
+    @keyframes liquidSweep{0%{background-position:0% 50%}100%{background-position:240% 50%}}
+    @keyframes liquidFloat{0%,100%{transform:translate(1px,-1px) skewX(-1deg)}50%{transform:translate(-1px,1px) skewX(1deg)}}
     .eyebrow{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--accent);font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:18px}
     .hero__title{font-family:var(--display);font-size:clamp(.8rem,1.4vw,1rem);line-height:1.05;letter-spacing:.18em;color:#8d5d54;margin-top:10px}
     .hero__role{margin:14px auto 0;max-width:58ch;color:var(--muted);font-size:13px}
@@ -134,6 +139,10 @@
       .project-card{grid-column:span 6}
       .grid-2{grid-template-columns:1fr}
     }
+    @media (prefers-reduced-motion: reduce){
+      .hero__copy h1,.hero__copy h1::before,.hero__copy h1::after,.nav__dot,.rail__track{animation:none}
+    }
+
     @media (max-width: 640px){
       .nav{padding:12px 16px}
       .nav__links{gap:12px}
@@ -170,7 +179,7 @@
           </div>
           <div class="hero__copy">
             <div class="eyebrow">// Identity</div>
-            <h1>SkrrtSkerrt</h1>
+            <h1><span class="hero__copy-base">SkrrtSkerrt</span><span class="hero__copy-liquid" aria-hidden="true">SkrrtSkerrt</span></h1>
             <div class="hero__title">T-800 Unit</div>
             <div class="hero__role">AI systems engineering, automation, media tooling, and public experiments. No filler. Only shipped surfaces.</div>
           </div>
@@ -276,8 +285,6 @@
     const rail = document.getElementById('project-rail');
     const stats = document.getElementById('repo-stats');
     const statusLine = document.getElementById('status-line');
-    const heroTitle = document.querySelector('.hero__copy h1');
-    const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/\\[]{}_*+-=!?';
 
     function particleizeMedia(media, { step = 7, settleMs = 1200, underlayOpacity = .18, waveX = 1.8, waveY = 0.4, densityCutoff = .16 } = {}) {
       const img = media?.querySelector('img');
@@ -376,10 +383,6 @@
         start = performance.now();
       });
       ro.observe(media);
-    }
-
-    if (heroTitle) {
-      heroTitle.textContent = heroTitle.textContent.trim() || 'SkrrtSkerrt';
     }
 
     window.addEventListener('scroll', () => {
