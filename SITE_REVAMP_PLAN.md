@@ -262,7 +262,7 @@ Likely touch points:
 - `assets/` if a reusable image is added
 
 Status:
-- Phase 7 asset created at `assets/rocket-raccoon.svg`.
+- Phase 7 asset created at `assets/rocket-raccoon-seq/frame-1.png` through `frame-5.png`.
 
 ## Phase 8 — place the motif through the page
 Goal: make the raccoon appear in a few deliberate spots instead of everywhere.
