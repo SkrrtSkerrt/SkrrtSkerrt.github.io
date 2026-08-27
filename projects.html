@@ -52,6 +52,7 @@
       position:fixed;inset:0 0 auto 0;z-index:40;display:flex;justify-content:space-between;align-items:center;
       padding:14px clamp(18px,4vw,54px);background:rgba(244,238,230,.78);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
     }
+    .nav::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent 0%, rgba(180,58,43,.55) 14%, rgba(198,181,166,.8) 50%, rgba(180,58,43,.55) 86%, transparent 100%);opacity:.65;pointer-events:none;animation:edgeShimmer 11s ease-in-out infinite}
     .nav__brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:24px;letter-spacing:2px}
     .nav__dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px rgba(180,58,43,.55);animation:pulse 2.8s infinite}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
@@ -59,7 +60,10 @@
     .nav__links a{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
     .nav__links a:hover{color:var(--text)}
 
-    .section{padding:clamp(108px,16vh,170px) clamp(18px,5vw,78px) clamp(78px,12vh,140px)}
+    .section{position:relative;padding:clamp(108px,16vh,170px) clamp(18px,5vw,78px) clamp(78px,12vh,140px)}
+    .section::before{content:"";position:absolute;left:clamp(18px,5vw,78px);right:clamp(18px,5vw,78px);top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(198,181,166,.85),transparent);opacity:.7;pointer-events:none}
+    .section::after{content:"";position:absolute;pointer-events:none;opacity:.45}
+    .section--archive::after{inset:clamp(30px,5vw,54px) clamp(18px,5vw,78px) auto clamp(18px,5vw,78px);height:2px;background:repeating-linear-gradient(90deg,rgba(198,181,166,.5) 0 18px,transparent 18px 28px)}
     .section__header{max-width:880px;margin-bottom:26px}
     .section__num{color:var(--accent);font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px}
     .section__title{font-family:var(--display);font-weight:400;font-size:clamp(3rem,8vw,6rem);line-height:.93;margin:0}
@@ -68,11 +72,23 @@
     .projects{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
     .projects .project-card{grid-column:span 4}
     .project-card{
+      position:relative;
       background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)), var(--panel);
       border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;
       transition:transform .25s ease,border-color .25s ease,background .25s ease;
     }
+    .project-card::before{content:"";position:absolute;inset:8px;border-radius:12px;border:1px solid rgba(198,181,166,.28);pointer-events:none;z-index:3;opacity:.7;animation:frameBreath 10s ease-in-out infinite}
+    .project-card::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;background:
+      radial-gradient(circle at 14px 14px, rgba(198,181,166,.8) 0 2px, transparent 2.7px),
+      radial-gradient(circle at calc(100% - 14px) 14px, rgba(198,181,166,.8) 0 2px, transparent 2.7px),
+      radial-gradient(circle at 14px calc(100% - 14px), rgba(198,181,166,.8) 0 2px, transparent 2.7px),
+      radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), rgba(198,181,166,.8) 0 2px, transparent 2.7px);
+      opacity:.66}
     .project-card:hover{transform:translateY(-4px);border-color:#bca998;background:var(--panel-2)}
+    .projects--featured .project-card::before{border-color:rgba(198,181,166,.42);opacity:.85}
+    .projects--all .project-card::before{border-color:rgba(198,181,166,.2);opacity:.55}
+    .projects--featured .project-card::after{opacity:.74}
+    .projects--all .project-card::after{opacity:.5}
     .project-card__media{aspect-ratio:16/9;overflow:hidden;background:linear-gradient(180deg,#111013 0%,#1b1717 55%,#0f0e10 100%);border-bottom:1px solid rgba(78,62,53,.08);position:relative;isolation:isolate}
     .project-card__media::before,.project-card__media::after{content:"";position:absolute;inset:0;pointer-events:none}
     .project-card__media::before{background:linear-gradient(115deg, rgba(255,255,255,.08) 0 2px, transparent 2px 14px, rgba(255,255,255,.04) 14px 15px, transparent 15px 100%),linear-gradient(180deg, rgba(255,255,255,.06), transparent 30%, rgba(0,0,0,.35));mix-blend-mode:screen;opacity:.45;z-index:2}
@@ -89,7 +105,8 @@
       linear-gradient(115deg, rgba(255,255,255,.08) 0 2px, transparent 2px 13px, rgba(255,255,255,.03) 13px 15px, transparent 15px 100%),
       linear-gradient(180deg, transparent 0%, rgba(255,255,255,.04) 100%);
       text-shadow:0 0 10px rgba(0,0,0,.65);}
-    .project-card__body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:0}
+    .project-card__body{position:relative;padding:20px 22px 22px;display:flex;flex-direction:column;gap:0}
+    .project-card__body::before{content:"SCRAP MODULE";display:inline-flex;align-self:flex-start;margin-bottom:12px;padding:4px 10px;border:1px solid rgba(198,181,166,.4);border-radius:999px;color:#8c7b70;background:rgba(255,255,255,.24);font-size:9px;letter-spacing:3px;text-transform:uppercase}
     .project-card h3{font-family:var(--display);font-size:clamp(2rem,4vw,2.7rem);line-height:.92;margin:0 0 10px}
     .project-card p{margin:0;color:var(--muted);font-size:14px;flex:1}
     .meta{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 18px}
@@ -101,8 +118,11 @@
 
     .status{margin-top:18px;color:var(--muted)}
     .status b{color:var(--accent);font-weight:700}
+    .section--archive .status{max-width:880px}
     .footer{padding:0 clamp(18px,5vw,78px) 40px;color:var(--dim);font-size:11px;letter-spacing:2px;text-transform:uppercase}
 
+    @keyframes edgeShimmer{0%,100%{opacity:.52}50%{opacity:.82}}
+    @keyframes frameBreath{0%,100%{opacity:.58}45%{opacity:.78}55%{opacity:.66}}
     @media (max-width: 980px){
       .projects .project-card{grid-column:span 6}
     }
@@ -113,7 +133,7 @@
       .section{padding-inline:16px}
     }
     @media (prefers-reduced-motion: reduce){
-      .nav__dot{animation:none}
+      .nav__dot,.nav::after,.project-card::before{animation:none}
     }
   </style>
 </head>
@@ -133,7 +153,7 @@
   </header>
 
   <main id="suite">
-    <section class="section">
+    <section class="section section--archive">
       <div class="section__header">
         <div class="section__num">All projects</div>
         <h1 class="section__title">Everything owned</h1>
