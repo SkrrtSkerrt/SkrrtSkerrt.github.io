@@ -69,6 +69,13 @@
     .section__title{font-family:var(--display);font-weight:400;font-size:clamp(3rem,8vw,6rem);line-height:.93;margin:0}
     .lede{max-width:68ch;margin:18px 0 0;color:var(--muted);font-size:clamp(.96rem,1.5vw,1.05rem)}
 
+    .rocket-motif{position:absolute;display:block;width:min(150px,17vw);aspect-ratio:256/180;opacity:0;transform:translateY(12px) scale(.92) rotate(var(--tilt,-5deg)) scaleX(var(--flip,1));transform-origin:center;transition:opacity .45s ease,transform .65s cubic-bezier(.16,1,.3,1),filter .45s ease;pointer-events:none;z-index:1;filter:drop-shadow(0 14px 18px rgba(68,48,39,.18))}
+    .rocket-motif.is-visible{opacity:.96;transform:translateY(0) scale(1) rotate(var(--tilt,-5deg)) scaleX(var(--flip,1))}
+    .rocket-motif__float{display:block;animation:rocketBob 6.8s ease-in-out infinite}
+    .rocket-motif img{display:block;width:100%;height:auto}
+    .rocket-motif::after{content:"";position:absolute;right:14%;bottom:18%;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle, rgba(255,184,90,.95) 0 24%, rgba(230,77,52,.7) 36%, rgba(230,77,52,0) 72%);filter:blur(.2px);opacity:.55;animation:weldSpark 7.5s ease-in-out infinite}
+    .rocket-motif--archive{bottom:clamp(10px,2vw,24px);right:clamp(12px,3vw,28px);width:min(118px,13vw);--tilt:6deg;--flip:-1}
+
     .projects{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
     .projects .project-card{grid-column:span 4}
     .project-card{
@@ -123,6 +130,8 @@
 
     @keyframes edgeShimmer{0%,100%{opacity:.52}50%{opacity:.82}}
     @keyframes frameBreath{0%,100%{opacity:.58}45%{opacity:.78}55%{opacity:.66}}
+    @keyframes rocketBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+    @keyframes weldSpark{0%,70%,100%{opacity:.12;transform:scale(.65)}72%{opacity:.72;transform:scale(1.15)}76%{opacity:.2;transform:scale(.7)}}
     @media (max-width: 980px){
       .projects .project-card{grid-column:span 6}
     }
@@ -133,7 +142,9 @@
       .section{padding-inline:16px}
     }
     @media (prefers-reduced-motion: reduce){
-      .nav__dot,.nav::after,.project-card::before{animation:none}
+      .nav__dot,.nav::after,.project-card::before,.rocket-motif,.rocket-motif__float,.rocket-motif::after{animation:none}
+      .rocket-motif{opacity:.92;transition:none;transform:rotate(var(--tilt,-5deg)) scaleX(var(--flip,1))}
+      .rocket-motif.is-visible{opacity:.92;transform:rotate(var(--tilt,-5deg)) scaleX(var(--flip,1))}
     }
   </style>
 </head>
@@ -159,6 +170,9 @@
         <h1 class="section__title">Everything owned</h1>
         <p class="lede">Complete public repo inventory from GitHub. Clean, direct, no duplicate landing-page clutter.</p>
       </div>
+      <div class="rocket-motif rocket-motif--archive" data-rocket-motif style="--tilt:6deg;--flip:-1">
+        <span class="rocket-motif__float"><img src="assets/rocket-raccoon.svg" alt="" aria-hidden="true" /></span>
+      </div>
       <div class="projects projects--all" id="all-projects" aria-live="polite"></div>
       <div class="status" id="status-line">STATUS: <b>BOOTING</b></div>
       <p class="status" id="repo-stats">Loading GitHub data.</p>
@@ -175,6 +189,22 @@
     const allRoot = document.getElementById('all-projects');
     const stats = document.getElementById('repo-stats');
     const statusLine = document.getElementById('status-line');
+
+    const rocketMotifs = document.querySelectorAll('[data-rocket-motif]');
+    if (rocketMotifs.length) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        rocketMotifs.forEach((node) => node.classList.add('is-visible'));
+      } else {
+        const motifObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            motifObserver.unobserve(entry.target);
+          });
+        }, { threshold: 0.24, rootMargin: '0px 0px -10%' });
+        rocketMotifs.forEach((node) => motifObserver.observe(node));
+      }
+    }
 
     function particleizeMedia(media, { step = 7, settleMs = 1200, underlayOpacity = .18, waveX = 1.8, waveY = 0.4, densityCutoff = .16 } = {}) {
       const img = media?.querySelector('img');

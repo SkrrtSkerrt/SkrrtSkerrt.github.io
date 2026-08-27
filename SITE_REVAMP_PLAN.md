@@ -235,3 +235,93 @@ Published:
 4. Add section-specific industrial details.
 5. Verify mobile and reduced-motion.
 6. Decide on the raccoon last.
+
+## Rocket-raccoon welding motif plan
+Goal: add a tiny animated rocket-raccoon that feels like it is welding the site together as you scroll, without turning the pages into mascot wallpaper.
+
+Rules:
+- keep the motif small and sparse
+- reuse one asset across both pages
+- keep it decorative only
+- keep motion subtle and reduced-motion safe
+- stop if it competes with titles, cards, or CTAs
+
+## Phase 7 — define the rocket-raccoon asset
+Goal: create one reusable visual that can be placed in multiple spots.
+
+Checklist:
+- [x] Decide SVG vs inline CSS shape vs PNG fallback
+- [x] Draw the raccoon as a tiny welded rocket shell with ember accents
+- [x] Keep the silhouette readable at small size
+- [x] Make sure the art can be flipped or rotated for variation
+- [x] Confirm the asset stays legible in grayscale/low contrast
+
+Likely touch points:
+- `index.html` if embedded inline
+- `projects.html` if embedded inline
+- `assets/` if a reusable image is added
+
+Status:
+- Phase 7 asset created at `assets/rocket-raccoon.svg`.
+
+## Phase 8 — place the motif through the page
+Goal: make the raccoon appear in a few deliberate spots instead of everywhere.
+
+Checklist:
+- [x] Add one hero-adjacent cameo on the homepage
+- [x] Add one section-seam appearance on the homepage
+- [x] Add one archive-page cameo near a lower section or footer
+- [x] Keep the total appearances low enough to avoid clutter
+- [x] Reuse the same asset with small transform differences only
+
+Likely touch points:
+- `index.html` hero, section, or footer markup/CSS
+- `projects.html` section or footer markup/CSS
+
+Status:
+- Phase 8 placement is live in `index.html` and `projects.html`.
+
+## Phase 9 — add the welding animation
+Goal: make the motif feel alive without constant motion.
+
+Checklist:
+- [x] Add a slow idle bob for the rocket-raccoon
+- [x] Add a brief weld-spark or torch flicker loop
+- [x] Add tiny exhaust shimmer only if it stays subtle
+- [x] Keep animation cheap and low-frequency
+- [x] Avoid motion on every instance at once
+
+Likely touch points:
+- `index.html` CSS and possibly small JS reveal hooks
+- `projects.html` CSS and possibly small JS reveal hooks
+
+Status:
+- Phase 9 motion is live and stays small.
+
+## Phase 10 — make it reveal cleanly on scroll
+Goal: let the motif appear as the user moves through the page.
+
+Checklist:
+- [x] Trigger the appearance by section visibility or a simple reveal class
+- [x] Stagger the entrances so it feels intentional
+- [x] Prevent overlap with text or CTA buttons at all viewport sizes
+- [x] Keep the archive page quieter than the homepage if needed
+- [x] Ensure reduced-motion shows the motif statically
+
+Likely touch points:
+- `index.html` scroll handling if needed
+- `projects.html` scroll handling if needed
+
+Status:
+- Phase 10 reveal hooks are live with reduced-motion fallback.
+
+## Phase 11 — final polish and verification
+Goal: prove the motif is decorative, readable, and safe.
+
+Checklist:
+- [x] Check desktop placement for subtlety
+- [x] Check mobile stacking and spacing
+- [x] Verify reduced-motion disables all animation cleanly
+- [x] Verify the homepage still reads fast and clean
+- [x] Verify the archive page still feels quieter than the homepage
+- [x] Publish only after local preview and cache-busted GitHub Pages verification
